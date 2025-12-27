@@ -1,0 +1,48 @@
+{
+  "cantidad": [
+    { "id": "1", "nombre": "Una persona", "descripcion": "single person" },
+    { "id": "2", "nombre": "Dos personas", "descripcion": "two people" },
+    { "id": "3", "nombre": "Pareja", "descripcion": "couple" },
+    { "id": "4", "nombre": "Grupo pequeño", "descripcion": "small group of people" },
+    { "id": "5", "nombre": "Grupo grande", "descripcion": "large group of people" },
+    { "id": "6", "nombre": "Familia", "descripcion": "family" }
+  ],
+  "tipos": [
+    { "id": "1", "nombre": "Mujer joven", "descripcion": "young woman" },
+    { "id": "2", "nombre": "Hombre joven", "descripcion": "young man" },
+    { "id": "3", "nombre": "Mujer mayor", "descripcion": "elderly woman" },
+    { "id": "4", "nombre": "Hombre mayor", "descripcion": "elderly man" },
+    { "id": "5", "nombre": "Adolescente", "descripcion": "teenager" },
+    { "id": "6", "nombre": "Niño/Niña", "descripcion": "child" },
+    { "id": "7", "nombre": "Profesional", "descripcion": "professional person" },
+    { "id": "8", "nombre": "Artista", "descripcion": "artist" },
+    { "id": "9", "nombre": "Deportista", "descripcion": "athlete" },
+    { "id": "10", "nombre": "Empresario/a", "descripcion": "business person" }
+  ],
+  "estilos": [
+    { "id": "1", "nombre": "Casual", "descripcion": "casual clothing style" },
+    { "id": "2", "nombre": "Formal", "descripcion": "formal attire" },
+    { "id": "3", "nombre": "Elegante", "descripcion": "elegant and sophisticated" },
+    { "id": "4", "nombre": "Deportivo", "descripcion": "sporty outfit" },
+    { "id": "5", "nombre": "Bohemio", "descripcion": "bohemian style" },
+    { "id": "6", "nombre": "Minimalista", "descripcion": "minimalist style" },
+    { "id": "7", "nombre": "Vintage", "descripcion": "vintage retro style" },
+    { "id": "8", "nombre": "Moderno", "descripcion": "modern contemporary style" }
+  ],
+  "expresiones": [
+    { "id": "1", "nombre": "Sonriente", "descripcion": "smiling" },
+    { "id": "2", "nombre": "Serio/a", "descripcion": "serious expression" },
+    { "id": "3", "nombre": "Pensativo/a", "descripcion": "thoughtful" },
+    { "id": "4", "nombre": "Feliz", "descripcion": "happy and joyful" },
+    { "id": "5", "nombre": "Confiado/a", "descripcion": "confident" },
+    { "id": "6", "nombre": "Relajado/a", "descripcion": "relaxed and calm" }
+  ],
+  "poses": [
+    { "id": "1", "nombre": "De pie", "descripcion": "standing" },
+    { "id": "2", "nombre": "Sentado/a", "descripcion": "sitting" },
+    { "id": "3", "nombre": "Caminando", "descripcion": "walking" },
+    { "id": "4", "nombre": "Retrato cercano", "descripcion": "close-up portrait" },
+    { "id": "5", "nombre": "Cuerpo completo", "descripcion": "full body shot" },
+    { "id": "6", "nombre": "Perfil", "descripcion": "profile view" }
+  ]
+}

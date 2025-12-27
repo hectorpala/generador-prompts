@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap');
+
+:root {
+  /* Tipografía */
+  --font-heading: 'Sora', system-ui, sans-serif;
+  --font-body: 'Work Sans', system-ui, sans-serif;
+  
+  /* Paleta sobria */
+  --color-bg: #F7F6F2;
+  --color-bg-card: #FFFFFF;
+  --color-bg-subtle: #F0EDE8;
+  --color-text: #1A1A1A;
+  --color-text-muted: #6B6B6B;
+  --color-text-light: #9A9A9A;
+  --color-border: #E6E3DD;
+  --color-border-light: #F0EDE8;
+  
+  /* Acento único */
+  --color-accent: #1F6F5C;
+  --color-accent-light: #E8F5F1;
+  --color-accent-hover: #185A4A;
+  
+  /* Estados */
+  --color-success: #2E7D5A;
+  --color-danger: #C53030;
+  --color-danger-light: #FEF2F2;
+  
+  /* Sombras sutiles */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+  
+  /* Radios */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  
+  /* Transiciones */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  #root {
+    padding: 1rem;
+  }
+}

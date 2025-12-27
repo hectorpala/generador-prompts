@@ -1,0 +1,30 @@
+{
+  "lugares": [
+    { "id": "1", "nombre": "Oficina moderna", "descripcion": "modern office interior" },
+    { "id": "2", "nombre": "Cafetería", "descripcion": "cozy coffee shop" },
+    { "id": "3", "nombre": "Parque", "descripcion": "outdoor park with trees" },
+    { "id": "4", "nombre": "Playa", "descripcion": "beach with ocean" },
+    { "id": "5", "nombre": "Ciudad", "descripcion": "urban city street" },
+    { "id": "6", "nombre": "Estudio fotográfico", "descripcion": "professional photo studio" },
+    { "id": "7", "nombre": "Hogar", "descripcion": "home interior" },
+    { "id": "8", "nombre": "Restaurante", "descripcion": "restaurant setting" },
+    { "id": "9", "nombre": "Gimnasio", "descripcion": "gym or fitness center" },
+    { "id": "10", "nombre": "Naturaleza", "descripcion": "natural landscape" }
+  ],
+  "ambientes": [
+    { "id": "1", "nombre": "Luz natural", "descripcion": "natural daylight" },
+    { "id": "2", "nombre": "Atardecer", "descripcion": "golden hour sunset lighting" },
+    { "id": "3", "nombre": "Noche", "descripcion": "nighttime with artificial lights" },
+    { "id": "4", "nombre": "Nublado", "descripcion": "overcast soft lighting" },
+    { "id": "5", "nombre": "Estudio", "descripcion": "professional studio lighting" },
+    { "id": "6", "nombre": "Dramático", "descripcion": "dramatic lighting with shadows" }
+  ],
+  "fondos": [
+    { "id": "1", "nombre": "Fondo neutro", "descripcion": "neutral solid background" },
+    { "id": "2", "nombre": "Fondo blanco", "descripcion": "clean white background" },
+    { "id": "3", "nombre": "Fondo desenfocado", "descripcion": "blurred bokeh background" },
+    { "id": "4", "nombre": "Arquitectura", "descripcion": "architectural elements in background" },
+    { "id": "5", "nombre": "Vegetación", "descripcion": "plants and greenery background" },
+    { "id": "6", "nombre": "Gradiente", "descripcion": "gradient color background" }
+  ]
+}
