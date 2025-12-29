@@ -1,0 +1,8 @@
+[
+  { "id": "neutro", "nombre": "Fondo neutro", "descripcion": "neutral solid background" },
+  { "id": "blanco", "nombre": "Fondo blanco", "descripcion": "clean white background" },
+  { "id": "desenfocado", "nombre": "Fondo desenfocado", "descripcion": "blurred bokeh background" },
+  { "id": "arquitectura", "nombre": "Arquitectura", "descripcion": "architectural elements in background" },
+  { "id": "vegetacion", "nombre": "Vegetacion", "descripcion": "plants and greenery background" },
+  { "id": "gradiente", "nombre": "Gradiente", "descripcion": "gradient color background" }
+]

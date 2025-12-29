@@ -1,0 +1,9 @@
+[
+  { "id": "mesa", "nombre": "Mesa", "descripcion": "a table" },
+  { "id": "silla", "nombre": "Silla", "descripcion": "a chair" },
+  { "id": "laptop", "nombre": "Laptop", "descripcion": "a laptop" },
+  { "id": "cuaderno", "nombre": "Cuaderno", "descripcion": "a notebook" },
+  { "id": "taza", "nombre": "Taza de cafe", "descripcion": "a coffee cup" },
+  { "id": "planta", "nombre": "Planta", "descripcion": "a potted plant" },
+  { "id": "telefono", "nombre": "Telefono", "descripcion": "a smartphone" }
+]

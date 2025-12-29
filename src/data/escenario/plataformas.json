@@ -1,0 +1,8 @@
+[
+  { "id": "gemini", "nombre": "Gemini (Imagen)", "descripcion": "gemini" },
+  { "id": "chatgpt", "nombre": "ChatGPT (DALL-E)", "descripcion": "dalle" },
+  { "id": "midjourney", "nombre": "Midjourney", "descripcion": "midjourney" },
+  { "id": "sdxl", "nombre": "SDXL", "descripcion": "sdxl" },
+  { "id": "flux", "nombre": "Flux", "descripcion": "flux" },
+  { "id": "ideogram", "nombre": "Ideogram", "descripcion": "ideogram" }
+]

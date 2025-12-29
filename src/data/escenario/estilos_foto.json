@@ -1,0 +1,10 @@
+[
+  { "id": "lifestyle", "nombre": "Lifestyle editorial", "descripcion": "editorial lifestyle photography" },
+  { "id": "retrato_estudio", "nombre": "Retrato de estudio", "descripcion": "studio portrait with softbox lighting" },
+  { "id": "cinematico", "nombre": "Cinematografico", "descripcion": "cinematic film still" },
+  { "id": "documental", "nombre": "Documental", "descripcion": "documentary candid photography" },
+  { "id": "street", "nombre": "Street photography", "descripcion": "street photography" },
+  { "id": "fashion", "nombre": "Fashion", "descripcion": "high fashion editorial photography" },
+  { "id": "corporativo", "nombre": "Corporativo", "descripcion": "corporate business portrait" },
+  { "id": "blanco_negro", "nombre": "Blanco y negro", "descripcion": "classic black and white photography" }
+]

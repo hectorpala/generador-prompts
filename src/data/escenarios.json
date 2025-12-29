@@ -26,5 +26,86 @@
     { "id": "4", "nombre": "Arquitectura", "descripcion": "architectural elements in background" },
     { "id": "5", "nombre": "Vegetación", "descripcion": "plants and greenery background" },
     { "id": "6", "nombre": "Gradiente", "descripcion": "gradient color background" }
+  ],
+  "estilosFoto": [
+    { "id": "1", "nombre": "Lifestyle editorial", "descripcion": "editorial lifestyle photography" },
+    { "id": "2", "nombre": "Retrato de estudio", "descripcion": "studio portrait with softbox lighting" },
+    { "id": "3", "nombre": "Cinematográfico", "descripcion": "cinematic film still" },
+    { "id": "4", "nombre": "Documental / candid", "descripcion": "documentary candid photography" },
+    { "id": "5", "nombre": "Street photography", "descripcion": "street photography" },
+    { "id": "6", "nombre": "Fashion / alta moda", "descripcion": "high fashion editorial photography" },
+    { "id": "7", "nombre": "Corporativo", "descripcion": "corporate business portrait" },
+    { "id": "8", "nombre": "Producto / e-commerce", "descripcion": "product photography for e-commerce" },
+    { "id": "9", "nombre": "Food photography", "descripcion": "food photography, appetizing styling" },
+    { "id": "10", "nombre": "Arquitectura / interiores", "descripcion": "architectural and interior photography" },
+    { "id": "11", "nombre": "Travel / outdoor", "descripcion": "travel photography, outdoor" },
+    { "id": "12", "nombre": "Macro / detalle", "descripcion": "macro photography, fine detail" },
+    { "id": "13", "nombre": "Fine art minimal", "descripcion": "minimal fine art photography" },
+    { "id": "14", "nombre": "Blanco y negro", "descripcion": "classic black and white photography" },
+    { "id": "15", "nombre": "Film / grano analógico", "descripcion": "analog film look, visible grain" }
+  ],
+  "perfilesModelo": [
+    { "id": "dalle", "nombre": "DALL-E / ChatGPT", "descripcion": "dalle" },
+    { "id": "gemini", "nombre": "Gemini / Google", "descripcion": "gemini" },
+    { "id": "midjourney", "nombre": "Midjourney", "descripcion": "midjourney" },
+    { "id": "sdxl", "nombre": "SDXL / Stable Diffusion", "descripcion": "sdxl" },
+    { "id": "flux", "nombre": "Flux", "descripcion": "flux" },
+    { "id": "ideogram", "nombre": "Ideogram", "descripcion": "ideogram" }
+  ],
+  "plataformas": [
+    { "id": "gemini", "nombre": "Gemini (Imagen)", "descripcion": "Gemini image model. Keep the prompt concise and literal. Prioritize photorealism, clean composition, and accurate details. If a reference image is provided, use it for identity/shape consistency." },
+    { "id": "chatgpt", "nombre": "ChatGPT (DALL-E)", "descripcion": "DALL-E prompt. Use natural language. Emphasize subject, environment, lighting, and mood. Avoid overly technical camera jargon. If a reference image is provided, treat it as style/identity guidance." }
+  ],
+  "props": [
+    { "id": "1", "nombre": "Mesa", "descripcion": "a table" },
+    { "id": "2", "nombre": "Silla", "descripcion": "a chair" },
+    { "id": "3", "nombre": "Laptop", "descripcion": "a laptop" },
+    { "id": "4", "nombre": "Cuaderno", "descripcion": "a notebook" },
+    { "id": "5", "nombre": "Taza de café", "descripcion": "a coffee cup" },
+    { "id": "6", "nombre": "Planta", "descripcion": "a potted plant" },
+    { "id": "7", "nombre": "Teléfono", "descripcion": "a smartphone" },
+    { "id": "8", "nombre": "Pistola (utilería)", "descripcion": "a prop pistol (non-violent, cinematic prop)" },
+    { "id": "9", "nombre": "Cuchillo (utilería)", "descripcion": "a prop knife (non-violent, cinematic prop)" },
+    { "id": "10", "nombre": "Piedra", "descripcion": "a stone" }
+  ],
+  "exclusiones": [
+    { "id": "1", "nombre": "Blur / Desenfoque", "descripcion": "blurry, out of focus" },
+    { "id": "2", "nombre": "Marca de agua", "descripcion": "watermark, signature, logo" },
+    { "id": "3", "nombre": "Texto", "descripcion": "text, words, letters" },
+    { "id": "4", "nombre": "Baja calidad", "descripcion": "low quality, jpeg artifacts, pixelated" },
+    { "id": "5", "nombre": "Anatomía incorrecta", "descripcion": "bad anatomy, deformed, extra limbs, mutated" },
+    { "id": "6", "nombre": "Manos mal dibujadas", "descripcion": "bad hands, extra fingers, fused fingers" },
+    { "id": "7", "nombre": "Cara distorsionada", "descripcion": "distorted face, ugly, disfigured" },
+    { "id": "8", "nombre": "Ojos cruzados", "descripcion": "cross-eyed, asymmetric eyes" },
+    { "id": "9", "nombre": "Iluminación plana", "descripcion": "flat lighting, overexposed, underexposed" },
+    { "id": "10", "nombre": "Fondo desordenado", "descripcion": "cluttered background, messy" },
+    { "id": "11", "nombre": "Estilo cartoon", "descripcion": "cartoon, anime, illustration, drawing" },
+    { "id": "12", "nombre": "CGI / 3D render", "descripcion": "cgi, 3d render, artificial looking" },
+    { "id": "13", "nombre": "Recorte malo", "descripcion": "cropped, cut off, out of frame" },
+    { "id": "14", "nombre": "Duplicados", "descripcion": "duplicate, clone, copy" },
+    { "id": "15", "nombre": "Colores sobresaturados", "descripcion": "oversaturated, neon colors, unnatural colors" }
+  ],
+  "aspectRatios": [
+    { "id": "1:1", "nombre": "1:1 Cuadrado", "descripcion": "1:1" },
+    { "id": "16:9", "nombre": "16:9 Panorámico", "descripcion": "16:9" },
+    { "id": "9:16", "nombre": "9:16 Vertical/Stories", "descripcion": "9:16" },
+    { "id": "4:3", "nombre": "4:3 Clásico", "descripcion": "4:3" },
+    { "id": "3:4", "nombre": "3:4 Retrato", "descripcion": "3:4" },
+    { "id": "3:2", "nombre": "3:2 Foto estándar", "descripcion": "3:2" },
+    { "id": "2:3", "nombre": "2:3 Retrato foto", "descripcion": "2:3" },
+    { "id": "21:9", "nombre": "21:9 Ultrawide", "descripcion": "21:9" }
+  ],
+  "calidades": [
+    { "id": "standard", "nombre": "Estándar", "descripcion": "standard quality" },
+    { "id": "hd", "nombre": "HD", "descripcion": "high definition, detailed" },
+    { "id": "4k", "nombre": "4K Ultra HD", "descripcion": "4k uhd, extremely detailed, high resolution" },
+    { "id": "8k", "nombre": "8K Máxima", "descripcion": "8k resolution, ultra high definition, maximum detail" }
+  ],
+  "tiposReferencia": [
+    { "id": "persona", "nombre": "Persona / Identidad", "descripcion": "Use the reference image to maintain the person's identity, face, and features" },
+    { "id": "objeto", "nombre": "Objeto / Forma", "descripcion": "Use the reference image to replicate the object's shape, design, and appearance" },
+    { "id": "estilo", "nombre": "Estilo / Mood", "descripcion": "Use the reference image as style guidance for colors, lighting, and overall mood" },
+    { "id": "pose", "nombre": "Pose / Composición", "descripcion": "Use the reference image as guidance for pose, framing, and composition" },
+    { "id": "escena", "nombre": "Escena / Ambiente", "descripcion": "Use the reference image to replicate the scene, environment, and setting" }
   ]
 }

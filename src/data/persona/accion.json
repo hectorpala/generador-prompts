@@ -1,0 +1,9 @@
+[
+  { "id": "corriendo", "nombre": "Corriendo", "descripcion": "running" },
+  { "id": "trabajando", "nombre": "Trabajando", "descripcion": "working" },
+  { "id": "escribiendo", "nombre": "Escribiendo", "descripcion": "writing" },
+  { "id": "observando", "nombre": "Observando", "descripcion": "observing" },
+  { "id": "riendo", "nombre": "Riendo", "descripcion": "laughing" },
+  { "id": "hablando", "nombre": "Hablando", "descripcion": "talking" },
+  { "id": "bailando", "nombre": "Bailando", "descripcion": "dancing" }
+]

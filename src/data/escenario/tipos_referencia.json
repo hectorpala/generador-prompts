@@ -1,0 +1,7 @@
+[
+  { "id": "persona", "nombre": "Persona / Identidad", "descripcion": "use reference for identity" },
+  { "id": "objeto", "nombre": "Objeto / Forma", "descripcion": "use reference for shape" },
+  { "id": "estilo", "nombre": "Estilo / Mood", "descripcion": "use reference for style" },
+  { "id": "pose", "nombre": "Pose / Composicion", "descripcion": "use reference for pose" },
+  { "id": "escena", "nombre": "Escena / Ambiente", "descripcion": "use reference for scene" }
+]

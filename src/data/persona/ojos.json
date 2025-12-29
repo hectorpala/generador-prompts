@@ -1,0 +1,9 @@
+[
+  { "id": "cafe", "nombre": "Cafe", "descripcion": "brown eyes" },
+  { "id": "azul", "nombre": "Azul", "descripcion": "blue eyes" },
+  { "id": "verde", "nombre": "Verde", "descripcion": "green eyes" },
+  { "id": "miel", "nombre": "Miel", "descripcion": "hazel eyes" },
+  { "id": "gris", "nombre": "Gris", "descripcion": "gray eyes" },
+  { "id": "almendrados", "nombre": "Almendrados", "descripcion": "almond-shaped eyes" },
+  { "id": "redondos", "nombre": "Redondos", "descripcion": "round eyes" }
+]

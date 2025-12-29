@@ -1,0 +1,8 @@
+[
+  { "id": "delgado", "nombre": "Delgado/a", "descripcion": "slim build" },
+  { "id": "atletico", "nombre": "Atletico/a", "descripcion": "athletic build" },
+  { "id": "curvilineo", "nombre": "Curvilineo/a", "descripcion": "curvy build" },
+  { "id": "plus_size", "nombre": "Plus size", "descripcion": "plus-size body type" },
+  { "id": "petite", "nombre": "Petite", "descripcion": "petite build" },
+  { "id": "alto", "nombre": "Alto/a", "descripcion": "tall build" }
+]

@@ -1,65 +1,137 @@
-import { useState, useEffect } from 'react'
-import { Opcion, PersonasData, EscenariosData, Selecciones } from './types'
-import personasDefault from './data/personas.json'
-import escenariosDefault from './data/escenarios.json'
+import React, { useEffect, useState } from 'react'
+import { Categoria, ListasData, Opcion, Selecciones } from './types'
+import { catalogo, listasBase } from './data/catalogo'
+import { plantillas, categoriaPlantillas, Plantilla } from './data/plantillas'
 import './App.css'
 
-const STORAGE_KEY_PERSONAS = 'generador-prompts-personas'
-const STORAGE_KEY_ESCENARIOS = 'generador-prompts-escenarios'
+const STORAGE_KEY_LISTAS = 'generador-prompts-listas'
+const MAX_PERSONAS = 3
+
+const personaSeccion = catalogo.find((seccion) => seccion.id === 'persona')
+const escenarioSeccion = catalogo.find((seccion) => seccion.id === 'escenario')
+const categoriasPersona = personaSeccion?.categorias || []
+const categoriasEscenario = escenarioSeccion?.categorias || []
+
+const collectCategoryIds = (categorias: Categoria[], ids: string[] = []) => {
+  categorias.forEach((categoria) => {
+    if (categoria.listaId) ids.push(categoria.id)
+    if (categoria.children) collectCategoryIds(categoria.children, ids)
+    if (categoria.childrenByOptionId) {
+      Object.values(categoria.childrenByOptionId).forEach((children) => {
+        collectCategoryIds(children, ids)
+      })
+    }
+  })
+  return ids
+}
+
+const buildInitialSelectionsFromCategorias = (categorias: Categoria[]): Selecciones => {
+  const ids = collectCategoryIds(categorias, [])
+  return ids.reduce((acc, id) => {
+    acc[id] = null
+    return acc
+  }, {} as Selecciones)
+}
+
+const collectPromptParts = (
+  categorias: Categoria[],
+  selecciones: Selecciones,
+  partes: string[]
+) => {
+  categorias.forEach((categoria) => {
+    const seleccion = selecciones[categoria.id]
+    if (seleccion && categoria.incluirEnPrompt !== false) {
+      const piezas = [categoria.promptPrefix, seleccion.descripcion, categoria.promptSuffix]
+        .filter(Boolean)
+        .join(' ')
+      partes.push(piezas)
+    }
+    if (categoria.children) collectPromptParts(categoria.children, selecciones, partes)
+    if (seleccion && categoria.childrenByOptionId) {
+      const children = categoria.childrenByOptionId[seleccion.id] || []
+      collectPromptParts(children, selecciones, partes)
+    }
+  })
+}
+
+const collectCategoryIdsFromTree = (categorias: Categoria[]) => {
+  return collectCategoryIds(categorias, [])
+}
+
+const crearSeleccionesPersonas = () => {
+  return Array.from({ length: MAX_PERSONAS }, () => buildInitialSelectionsFromCategorias(categoriasPersona))
+}
+
+const crearSeleccionesEscenario = () => {
+  return buildInitialSelectionsFromCategorias(categoriasEscenario)
+}
 
 function App() {
-  const [personas, setPersonas] = useState<PersonasData>(personasDefault)
-  const [escenarios, setEscenarios] = useState<EscenariosData>(escenariosDefault)
-  const [selecciones, setSelecciones] = useState<Selecciones>({
-    cantidad: null,
-    tipo: null,
-    estilo: null,
-    expresion: null,
-    pose: null,
-    lugar: null,
-    ambiente: null,
-    fondo: null,
-  })
+  const [listas, setListas] = useState<ListasData>(listasBase)
+  const [cantidadPersonas, setCantidadPersonas] = useState(1)
+  const [personaActiva, setPersonaActiva] = useState(0)
+  const [seleccionesPersonas, setSeleccionesPersonas] = useState<Selecciones[]>(() =>
+    crearSeleccionesPersonas()
+  )
+  const [seleccionesEscenario, setSeleccionesEscenario] = useState<Selecciones>(() =>
+    crearSeleccionesEscenario()
+  )
   const [prompt, setPrompt] = useState('')
   const [copiado, setCopiado] = useState(false)
   const [vistaAdmin, setVistaAdmin] = useState(false)
   const [categoriaEditando, setCategoriaEditando] = useState<string | null>(null)
-  const [categoriaAbierta, setCategoriaAbierta] = useState<string | null>(null)
-  const [nuevoItem, setNuevoItem] = useState({ nombre: '', descripcion: '' })
+  const [categoriasAbiertas, setCategoriasAbiertas] = useState<Record<string, boolean>>({})
+  const [busquedas, setBusquedas] = useState<Record<string, string>>({})
+  const [nuevoItem, setNuevoItem] = useState<Record<string, { nombre: string; descripcion: string }>>({})
+  const [mostrarPlantillas, setMostrarPlantillas] = useState(false)
+  const [categoriaPlantillaActiva, setCategoriaPlantillaActiva] = useState<string | null>(null)
 
   useEffect(() => {
-    const personasGuardadas = localStorage.getItem(STORAGE_KEY_PERSONAS)
-    const escenariosGuardados = localStorage.getItem(STORAGE_KEY_ESCENARIOS)
-    if (personasGuardadas) setPersonas(JSON.parse(personasGuardadas))
-    if (escenariosGuardados) setEscenarios(JSON.parse(escenariosGuardados))
+    const listasGuardadas = localStorage.getItem(STORAGE_KEY_LISTAS)
+    if (listasGuardadas) {
+      try {
+        const parsed = JSON.parse(listasGuardadas) as ListasData
+        setListas({ ...listasBase, ...parsed })
+      } catch {
+        setListas(listasBase)
+      }
+    }
   }, [])
 
   useEffect(() => {
-    generarPrompt()
-  }, [selecciones])
+    if (personaActiva > cantidadPersonas - 1) {
+      setPersonaActiva(0)
+    }
+  }, [cantidadPersonas, personaActiva])
 
-  const guardarDatos = (newPersonas: PersonasData, newEscenarios: EscenariosData) => {
-    localStorage.setItem(STORAGE_KEY_PERSONAS, JSON.stringify(newPersonas))
-    localStorage.setItem(STORAGE_KEY_ESCENARIOS, JSON.stringify(newEscenarios))
-  }
+  useEffect(() => {
+    const segmentos: string[] = []
+    const cantidadTexto =
+      cantidadPersonas === 1 ? 'one person' : cantidadPersonas === 2 ? 'two people' : 'three people'
 
-  const generarPrompt = () => {
-    const partes: string[] = []
-    
-    if (selecciones.cantidad) partes.push(selecciones.cantidad.descripcion)
-    if (selecciones.tipo) partes.push(selecciones.tipo.descripcion)
-    if (selecciones.estilo) partes.push(selecciones.estilo.descripcion)
-    if (selecciones.expresion) partes.push(selecciones.expresion.descripcion)
-    if (selecciones.pose) partes.push(selecciones.pose.descripcion)
-    if (selecciones.lugar) partes.push('in a ' + selecciones.lugar.descripcion)
-    if (selecciones.ambiente) partes.push('with ' + selecciones.ambiente.descripcion)
-    if (selecciones.fondo) partes.push(selecciones.fondo.descripcion)
+    for (let index = 0; index < cantidadPersonas; index += 1) {
+      const partesPersona: string[] = []
+      collectPromptParts(categoriasPersona, seleccionesPersonas[index], partesPersona)
+      if (partesPersona.length > 0) {
+        segmentos.push(`Person ${index + 1}: ${partesPersona.join(', ')}`)
+      }
+    }
 
-    if (partes.length > 0) {
-      setPrompt(partes.join(', ') + ', high quality, professional photography')
+    const partesEscenario: string[] = []
+    collectPromptParts(categoriasEscenario, seleccionesEscenario, partesEscenario)
+    if (partesEscenario.length > 0) {
+      segmentos.push(`Scene: ${partesEscenario.join(', ')}`)
+    }
+
+    if (segmentos.length > 0) {
+      setPrompt([cantidadTexto, ...segmentos].join(' / ') + ', high quality, professional photography')
     } else {
       setPrompt('')
     }
+  }, [cantidadPersonas, seleccionesPersonas, seleccionesEscenario])
+
+  const guardarListas = (nuevasListas: ListasData) => {
+    localStorage.setItem(STORAGE_KEY_LISTAS, JSON.stringify(nuevasListas))
   }
 
   const copiarPrompt = async () => {
@@ -70,151 +142,309 @@ function App() {
     }
   }
 
-  const seleccionar = (cat: keyof Selecciones, opcion: Opcion) => {
-    setSelecciones(prev => ({
-      ...prev,
-      [cat]: prev[cat]?.id === opcion.id ? null : opcion
-    }))
-  }
+  const actualizarSelecciones = (prev: Selecciones, categoria: Categoria, opcion: Opcion) => {
+    const siguiente = { ...prev }
+    const seleccionActual = prev[categoria.id]
+    const nuevaSeleccion = seleccionActual?.id === opcion.id ? null : opcion
+    siguiente[categoria.id] = nuevaSeleccion
 
-  const agregarItem = (categoria: string) => {
-    if (!nuevoItem.nombre || !nuevoItem.descripcion) return
-
-    const newId = Date.now().toString()
-    const item: Opcion = { id: newId, ...nuevoItem }
-
-    if (['cantidad', 'tipos', 'estilos', 'expresiones', 'poses'].includes(categoria)) {
-      const newPersonas = {
-        ...personas,
-        [categoria]: [...personas[categoria as keyof PersonasData], item]
+    if (categoria.childrenByOptionId) {
+      const idsParaLimpiar: string[] = []
+      if (seleccionActual && seleccionActual.id !== nuevaSeleccion?.id) {
+        const hijosPrevios = categoria.childrenByOptionId[seleccionActual.id] || []
+        idsParaLimpiar.push(...collectCategoryIdsFromTree(hijosPrevios))
       }
-      setPersonas(newPersonas)
-      guardarDatos(newPersonas, escenarios)
-    } else {
-      const newEscenarios = {
-        ...escenarios,
-        [categoria]: [...escenarios[categoria as keyof EscenariosData], item]
+      if (!nuevaSeleccion) {
+        Object.values(categoria.childrenByOptionId).forEach((children) => {
+          idsParaLimpiar.push(...collectCategoryIdsFromTree(children))
+        })
       }
-      setEscenarios(newEscenarios)
-      guardarDatos(personas, newEscenarios)
+      idsParaLimpiar.forEach((id) => {
+        siguiente[id] = null
+      })
     }
 
-    setNuevoItem({ nombre: '', descripcion: '' })
+    return siguiente
   }
 
-  const eliminarItem = (categoria: string, id: string) => {
-    if (['cantidad', 'tipos', 'estilos', 'expresiones', 'poses'].includes(categoria)) {
-      const newPersonas = {
-        ...personas,
-        [categoria]: personas[categoria as keyof PersonasData].filter(i => i.id !== id)
-      }
-      setPersonas(newPersonas)
-      guardarDatos(newPersonas, escenarios)
-    } else {
-      const newEscenarios = {
-        ...escenarios,
-        [categoria]: escenarios[categoria as keyof EscenariosData].filter(i => i.id !== id)
-      }
-      setEscenarios(newEscenarios)
-      guardarDatos(personas, newEscenarios)
+  const seleccionarPersona = (index: number, categoria: Categoria, opcion: Opcion) => {
+    setSeleccionesPersonas((prev) => {
+      const siguiente = [...prev]
+      const actuales = prev[index] || buildInitialSelectionsFromCategorias(categoriasPersona)
+      siguiente[index] = actualizarSelecciones(actuales, categoria, opcion)
+      return siguiente
+    })
+  }
+
+  const seleccionarEscenario = (categoria: Categoria, opcion: Opcion) => {
+    setSeleccionesEscenario((prev) => actualizarSelecciones(prev, categoria, opcion))
+  }
+
+  const actualizarNuevoItem = (listaId: string, campo: 'nombre' | 'descripcion', valor: string) => {
+    setNuevoItem((prev) => {
+      const actual = prev[listaId] || { nombre: '', descripcion: '' }
+      return { ...prev, [listaId]: { ...actual, [campo]: valor } }
+    })
+  }
+
+  const agregarItem = (listaId: string) => {
+    const itemActual = nuevoItem[listaId] || { nombre: '', descripcion: '' }
+    if (!itemActual.nombre || !itemActual.descripcion) return
+
+    const newItem: Opcion = { id: Date.now().toString(), ...itemActual }
+    const nuevasListas = {
+      ...listas,
+      [listaId]: [...(listas[listaId] || []), newItem]
     }
+    setListas(nuevasListas)
+    guardarListas(nuevasListas)
+    setNuevoItem((prev) => ({ ...prev, [listaId]: { nombre: '', descripcion: '' } }))
+  }
+
+  const eliminarItem = (listaId: string, id: string) => {
+    const nuevasListas = {
+      ...listas,
+      [listaId]: (listas[listaId] || []).filter((item) => item.id !== id)
+    }
+    setListas(nuevasListas)
+    guardarListas(nuevasListas)
   }
 
   const resetearDatos = () => {
-    localStorage.removeItem(STORAGE_KEY_PERSONAS)
-    localStorage.removeItem(STORAGE_KEY_ESCENARIOS)
-    setPersonas(personasDefault)
-    setEscenarios(escenariosDefault)
+    localStorage.removeItem(STORAGE_KEY_LISTAS)
+    setListas(listasBase)
+    setCantidadPersonas(1)
+    setPersonaActiva(0)
+    setSeleccionesPersonas(crearSeleccionesPersonas())
+    setSeleccionesEscenario(crearSeleccionesEscenario())
+    setCategoriasAbiertas({})
+    setBusquedas({})
   }
 
-  const toggleCategoria = (key: string) => {
-    setCategoriaAbierta(categoriaAbierta === key ? null : key)
+  const aplicarPlantilla = (plantilla: Plantilla) => {
+    const nuevasSeleccionesPersona = { ...buildInitialSelectionsFromCategorias(categoriasPersona) }
+    Object.entries(plantilla.persona).forEach(([key, value]) => {
+      if (value !== null) {
+        nuevasSeleccionesPersona[key] = value
+      }
+    })
+
+    const nuevasSeleccionesEscenario = { ...buildInitialSelectionsFromCategorias(categoriasEscenario) }
+    Object.entries(plantilla.escenario).forEach(([key, value]) => {
+      if (value !== null) {
+        nuevasSeleccionesEscenario[key] = value
+      }
+    })
+
+    setSeleccionesPersonas((prev) => {
+      const siguiente = [...prev]
+      siguiente[personaActiva] = nuevasSeleccionesPersona
+      return siguiente
+    })
+    setSeleccionesEscenario(nuevasSeleccionesEscenario)
+    setMostrarPlantillas(false)
   }
 
-  const getSeleccionTexto = (key: keyof Selecciones) => {
-    return selecciones[key]?.nombre || 'Seleccionar...'
+  const plantillasFiltradas = categoriaPlantillaActiva
+    ? plantillas.filter(p => p.categoria === categoriaPlantillaActiva)
+    : plantillas
+
+
+  const toggleCategoria = (id: string) => {
+    setCategoriasAbiertas((prev) => ({ ...prev, [id]: !prev[id] }))
   }
 
-  const renderCategoria = (titulo: string, opciones: Opcion[], seleccionKey: keyof Selecciones) => {
-    const isOpen = categoriaAbierta === seleccionKey
-    const tieneSeleccion = selecciones[seleccionKey] !== null
-    
+  const getSeleccionTexto = (selecciones: Selecciones, categoriaId: string) => {
+    return selecciones[categoriaId]?.nombre || 'Seleccionar...'
+  }
+
+  const getOptionNombre = (listaId: string | undefined, opcionId: string) => {
+    if (!listaId) return opcionId
+    return listas[listaId]?.find((item) => item.id === opcionId)?.nombre || opcionId
+  }
+
+  const renderCategoria = (
+    categoria: Categoria,
+    contexto: {
+      selecciones: Selecciones
+      onSelect: (categoria: Categoria, opcion: Opcion) => void
+      scope: string
+    }
+  ) => {
+    const opciones = categoria.listaId ? listas[categoria.listaId] || [] : []
+    const seleccion = contexto.selecciones[categoria.id]
+    const scopeKey = `${contexto.scope}:${categoria.id}`
+    const isOpen = !!categoriasAbiertas[scopeKey]
+    const busqueda = busquedas[scopeKey] || ''
+    const busquedaNormalizada = busqueda.trim().toLowerCase()
+    const opcionesFiltradas = busquedaNormalizada
+      ? opciones.filter((opcion) => {
+          return (
+            opcion.nombre.toLowerCase().includes(busquedaNormalizada) ||
+            opcion.descripcion.toLowerCase().includes(busquedaNormalizada)
+          )
+        })
+      : opciones
+
+    const children: Categoria[] = []
+    if (categoria.children) children.push(...categoria.children)
+    if (seleccion && categoria.childrenByOptionId) {
+      const childrenByOption = categoria.childrenByOptionId[seleccion.id] || []
+      children.push(...childrenByOption)
+    }
+
     return (
-      <div className={'categoria-acordeon ' + (isOpen ? 'abierta' : '')}>
-        <div 
-          className={'categoria-header ' + (tieneSeleccion ? 'con-seleccion' : '')}
-          onClick={() => toggleCategoria(seleccionKey)}
+      <div className={'categoria-acordeon ' + (isOpen ? 'abierta' : '')} key={scopeKey}>
+        <div
+          className={'categoria-header ' + (seleccion ? 'con-seleccion' : '')}
+          onClick={() => toggleCategoria(scopeKey)}
         >
-          <span className="categoria-titulo">{titulo}</span>
-          <span className="categoria-valor">{getSeleccionTexto(seleccionKey)}</span>
+          <span className="categoria-titulo">{categoria.titulo}</span>
+          <span className="categoria-valor">{getSeleccionTexto(contexto.selecciones, categoria.id)}</span>
           <span className="categoria-flecha">▾</span>
         </div>
         {isOpen && (
           <div className="categoria-opciones">
-            {opciones.map(opcion => (
-              <button
-                key={opcion.id}
-                className={'opcion ' + (selecciones[seleccionKey]?.id === opcion.id ? 'seleccionada' : '')}
-                onClick={() => {
-                  seleccionar(seleccionKey, opcion)
-                  setCategoriaAbierta(null)
-                }}
-                title={opcion.descripcion}
-              >
-                {opcion.nombre}
-              </button>
-            ))}
+            {opciones.length > 0 && (
+              <div className="buscador-opciones">
+                <input
+                  type="text"
+                  placeholder={`Buscar en ${categoria.titulo}...`}
+                  value={busqueda}
+                  onChange={(event) =>
+                    setBusquedas((prev) => ({ ...prev, [scopeKey]: event.target.value }))
+                  }
+                />
+              </div>
+            )}
+            {opciones.length === 0 && (
+              <div className="sin-resultados">Sin opciones disponibles.</div>
+            )}
+            {opciones.length > 0 && opcionesFiltradas.length === 0 && (
+              <div className="sin-resultados">Sin resultados para la busqueda.</div>
+            )}
+            {opcionesFiltradas.length > 0 && (
+              <div className="opciones-grid">
+                {opcionesFiltradas.map((opcion) => (
+                  <button
+                    key={opcion.id}
+                    className={
+                      'opcion ' + (contexto.selecciones[categoria.id]?.id === opcion.id ? 'seleccionada' : '')
+                    }
+                    onClick={() => contexto.onSelect(categoria, opcion)}
+                    title={opcion.descripcion}
+                  >
+                    {opcion.nombre}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        {children.length > 0 && (
+          <div className="categoria-hijas">
+            {children.map((child) => renderCategoria(child, contexto))}
           </div>
         )}
       </div>
     )
   }
 
-  const renderEditorCategoria = (titulo: string, categoria: string, opciones: Opcion[]) => (
-    <div className="editor-categoria">
-      <h4 onClick={() => setCategoriaEditando(categoriaEditando === categoria ? null : categoria)}>
-        {titulo} ({opciones.length}) {categoriaEditando === categoria ? 'v' : '>'}
-      </h4>
-      {categoriaEditando === categoria && (
-        <div className="editor-contenido">
-          <div className="lista-items">
-            {opciones.map(item => (
-              <div key={item.id} className="item-editable">
-                <span>{item.nombre}</span>
-                <small>{item.descripcion}</small>
-                <button onClick={() => eliminarItem(categoria, item.id)} className="btn-eliminar">x</button>
-              </div>
-            ))}
-          </div>
-          <div className="agregar-item">
-            <input
-              type="text"
-              placeholder="Nombre"
-              value={nuevoItem.nombre}
-              onChange={e => setNuevoItem(prev => ({ ...prev, nombre: e.target.value }))}
-            />
-            <input
-              type="text"
-              placeholder="Descripcion (en ingles)"
-              value={nuevoItem.descripcion}
-              onChange={e => setNuevoItem(prev => ({ ...prev, descripcion: e.target.value }))}
-            />
-            <button onClick={() => agregarItem(categoria)} className="btn-agregar">+ Agregar</button>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-
   const contarSelecciones = () => {
-    return Object.values(selecciones).filter(s => s !== null).length
+    const personasContadas = seleccionesPersonas
+      .slice(0, cantidadPersonas)
+      .reduce((total, seleccionesPersona) => {
+        return total + Object.values(seleccionesPersona).filter((seleccion) => seleccion !== null).length
+      }, 0)
+    const escenarioContado = Object.values(seleccionesEscenario).filter((seleccion) => seleccion !== null)
+      .length
+    return personasContadas + escenarioContado
+  }
+
+  const renderEditorCategoria = (categoriaId: string, titulo: string, listaId: string) => {
+    const opciones = listas[listaId] || []
+    const itemNuevo = nuevoItem[listaId] || { nombre: '', descripcion: '' }
+
+    return (
+      <div className="editor-categoria" key={categoriaId}>
+        <h4 onClick={() => setCategoriaEditando(categoriaEditando === categoriaId ? null : categoriaId)}>
+          {titulo} ({opciones.length}) {categoriaEditando === categoriaId ? 'v' : '>'}
+        </h4>
+        {categoriaEditando === categoriaId && (
+          <div className="editor-contenido">
+            <div className="lista-items">
+              {opciones.map((item) => (
+                <div key={item.id} className="item-editable">
+                  <span>{item.nombre}</span>
+                  <small>{item.descripcion}</small>
+                  <button
+                    onClick={() => eliminarItem(listaId, item.id)}
+                    className="btn-eliminar"
+                  >
+                    x
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="agregar-item">
+              <input
+                type="text"
+                placeholder="Nombre"
+                value={itemNuevo.nombre}
+                onChange={(event) => actualizarNuevoItem(listaId, 'nombre', event.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Descripcion (en ingles)"
+                value={itemNuevo.descripcion}
+                onChange={(event) => actualizarNuevoItem(listaId, 'descripcion', event.target.value)}
+              />
+              <button onClick={() => agregarItem(listaId)} className="btn-agregar">
+                + Agregar
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  const renderAdminCategorias = (categorias: Categoria[], path = ''): React.ReactNode[] => {
+    const items: React.ReactNode[] = []
+    categorias.forEach((categoria) => {
+      const titulo = path ? `${path} / ${categoria.titulo}` : categoria.titulo
+      if (categoria.listaId) {
+        items.push(renderEditorCategoria(categoria.id, titulo, categoria.listaId))
+      }
+      if (categoria.children) {
+        items.push(...renderAdminCategorias(categoria.children, titulo))
+      }
+      if (categoria.childrenByOptionId) {
+        Object.entries(categoria.childrenByOptionId).forEach(([opcionId, children]) => {
+          const nombreOpcion = getOptionNombre(categoria.listaId, opcionId)
+          const nuevoPath = `${titulo} / ${nombreOpcion}`
+          items.push(...renderAdminCategorias(children, nuevoPath))
+        })
+      }
+    })
+    return items
+  }
+
+  const adminSections = catalogo.map((seccion) => ({
+    id: seccion.id,
+    titulo: seccion.titulo,
+    items: renderAdminCategorias(seccion.categorias)
+  }))
+
+  const personaTieneDatos = (index: number) => {
+    return Object.values(seleccionesPersonas[index] || {}).some((seleccion) => seleccion !== null)
   }
 
   return (
     <div className="app">
       <header>
         <h1>Generador de Prompts</h1>
-        <button 
+        <button
           className={'btn-admin ' + (vistaAdmin ? 'activo' : '')}
           onClick={() => setVistaAdmin(!vistaAdmin)}
         >
@@ -225,21 +455,106 @@ function App() {
       {!vistaAdmin ? (
         <div className="contenedor-principal">
           <div className="panel-selecciones">
-            <div className="grupo-acordeon">
-              <h2>Persona</h2>
-              {renderCategoria('Cantidad', personas.cantidad, 'cantidad')}
-              {renderCategoria('Tipo', personas.tipos, 'tipo')}
-              {renderCategoria('Estilo', personas.estilos, 'estilo')}
-              {renderCategoria('Expresion', personas.expresiones, 'expresion')}
-              {renderCategoria('Pose', personas.poses, 'pose')}
+            {/* Selector de Plantillas */}
+            <div className="plantillas-section">
+              <button
+                className={'btn-plantillas ' + (mostrarPlantillas ? 'activo' : '')}
+                onClick={() => setMostrarPlantillas(!mostrarPlantillas)}
+              >
+                Usar Plantilla
+              </button>
+
+              {mostrarPlantillas && (
+                <div className="plantillas-panel">
+                  <div className="plantillas-categorias">
+                    <button
+                      className={'plantilla-cat-btn ' + (categoriaPlantillaActiva === null ? 'activo' : '')}
+                      onClick={() => setCategoriaPlantillaActiva(null)}
+                    >
+                      Todas
+                    </button>
+                    {categoriaPlantillas.map((cat) => (
+                      <button
+                        key={cat.id}
+                        className={'plantilla-cat-btn ' + (categoriaPlantillaActiva === cat.id ? 'activo' : '')}
+                        onClick={() => setCategoriaPlantillaActiva(cat.id)}
+                      >
+                        <span>{cat.icono}</span> {cat.nombre}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="plantillas-grid">
+                    {plantillasFiltradas.map((plantilla) => (
+                      <button
+                        key={plantilla.id}
+                        className="plantilla-card"
+                        onClick={() => aplicarPlantilla(plantilla)}
+                        title={plantilla.descripcion}
+                      >
+                        <span className="plantilla-icono">{plantilla.icono}</span>
+                        <span className="plantilla-nombre">{plantilla.nombre}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="grupo-acordeon">
-              <h2>Escenario</h2>
-              {renderCategoria('Lugar', escenarios.lugares, 'lugar')}
-              {renderCategoria('Ambiente', escenarios.ambientes, 'ambiente')}
-              {renderCategoria('Fondo', escenarios.fondos, 'fondo')}
-            </div>
+
+            {personaSeccion && (
+              <div className="grupo-acordeon">
+                <h2>{personaSeccion.titulo}</h2>
+                <div className="selector-cantidad-label">Cantidad de personas</div>
+                <div className="selector-cantidad">
+                  {[1, 2, 3].map((cantidad) => (
+                    <button
+                      key={cantidad}
+                      className={'btn-cantidad ' + (cantidadPersonas === cantidad ? 'activo' : '')}
+                      onClick={() => setCantidadPersonas(cantidad)}
+                    >
+                      {cantidad}
+                    </button>
+                  ))}
+                </div>
+                <div className="tabs-personas">
+                  {Array.from({ length: cantidadPersonas }, (_, index) => (
+                    <button
+                      key={index}
+                      className={
+                        'tab-persona ' +
+                        (personaActiva === index ? 'activo ' : '') +
+                        (personaTieneDatos(index) ? 'tiene-datos' : '')
+                      }
+                      onClick={() => setPersonaActiva(index)}
+                    >
+                      Persona {index + 1}
+                    </button>
+                  ))}
+                </div>
+                {categoriasPersona.map((categoria) =>
+                  renderCategoria(categoria, {
+                    selecciones:
+                      seleccionesPersonas[personaActiva] ||
+                      buildInitialSelectionsFromCategorias(categoriasPersona),
+                    onSelect: (cat, opcion) => seleccionarPersona(personaActiva, cat, opcion),
+                    scope: `persona-${personaActiva}`
+                  })
+                )}
+              </div>
+            )}
+
+            {escenarioSeccion && (
+              <div className="grupo-acordeon">
+                <h2>{escenarioSeccion.titulo}</h2>
+                {categoriasEscenario.map((categoria) =>
+                  renderCategoria(categoria, {
+                    selecciones: seleccionesEscenario,
+                    onSelect: seleccionarEscenario,
+                    scope: 'escenario'
+                  })
+                )}
+              </div>
+            )}
           </div>
 
           <div className="panel-resultado">
@@ -247,10 +562,8 @@ function App() {
               <h2>Prompt</h2>
               <span className="contador">{contarSelecciones()} selecciones</span>
             </div>
-            <div className="prompt-box">
-              {prompt || 'Selecciona opciones para generar el prompt...'}
-            </div>
-            <button 
+            <div className="prompt-box">{prompt || 'Selecciona opciones para generar el prompt...'}</div>
+            <button
               className={'btn-copiar ' + (copiado ? 'copiado' : '')}
               onClick={copiarPrompt}
               disabled={!prompt}
@@ -262,23 +575,16 @@ function App() {
       ) : (
         <section className="admin">
           <h2>Administrar Opciones</h2>
-          <p className="admin-info">Haz clic en una categoria para expandirla y editar sus opciones.</p>
-          
-          <div className="admin-grupo">
-            <h3>Personas</h3>
-            {renderEditorCategoria('Cantidad', 'cantidad', personas.cantidad)}
-            {renderEditorCategoria('Tipos de persona', 'tipos', personas.tipos)}
-            {renderEditorCategoria('Estilos', 'estilos', personas.estilos)}
-            {renderEditorCategoria('Expresiones', 'expresiones', personas.expresiones)}
-            {renderEditorCategoria('Poses', 'poses', personas.poses)}
-          </div>
+          <p className="admin-info">
+            Haz clic en una categoria para expandirla y editar sus opciones.
+          </p>
 
-          <div className="admin-grupo">
-            <h3>Escenarios</h3>
-            {renderEditorCategoria('Lugares', 'lugares', escenarios.lugares)}
-            {renderEditorCategoria('Ambientes', 'ambientes', escenarios.ambientes)}
-            {renderEditorCategoria('Fondos', 'fondos', escenarios.fondos)}
-          </div>
+          {adminSections.map((seccion) => (
+            <div className="admin-grupo" key={seccion.id}>
+              <h3>{seccion.titulo}</h3>
+              {seccion.items}
+            </div>
+          ))}
 
           <button className="btn-reset" onClick={resetearDatos}>
             Restaurar valores por defecto

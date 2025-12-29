@@ -1,0 +1,7 @@
+[
+  { "id": "nino", "nombre": "Nino/a", "descripcion": "child" },
+  { "id": "adolescente", "nombre": "Adolescente", "descripcion": "teenager" },
+  { "id": "joven", "nombre": "Joven", "descripcion": "young adult" },
+  { "id": "adulto", "nombre": "Adulto/a", "descripcion": "adult" },
+  { "id": "mayor", "nombre": "Mayor", "descripcion": "elderly" }
+]

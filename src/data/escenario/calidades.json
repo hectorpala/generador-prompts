@@ -1,0 +1,6 @@
+[
+  { "id": "standard", "nombre": "Estandar", "descripcion": "standard quality" },
+  { "id": "hd", "nombre": "HD", "descripcion": "high definition, detailed" },
+  { "id": "4k", "nombre": "4K Ultra HD", "descripcion": "4k uhd, extremely detailed" },
+  { "id": "8k", "nombre": "8K Maxima", "descripcion": "8k resolution, ultra high definition" }
+]

@@ -4,27 +4,22 @@ export interface Opcion {
   descripcion: string;
 }
 
-export interface PersonasData {
-  cantidad: Opcion[];
-  tipos: Opcion[];
-  estilos: Opcion[];
-  expresiones: Opcion[];
-  poses: Opcion[];
+export interface Categoria {
+  id: string;
+  titulo: string;
+  listaId?: string;
+  promptPrefix?: string;
+  promptSuffix?: string;
+  incluirEnPrompt?: boolean;
+  children?: Categoria[];
+  childrenByOptionId?: Record<string, Categoria[]>;
 }
 
-export interface EscenariosData {
-  lugares: Opcion[];
-  ambientes: Opcion[];
-  fondos: Opcion[];
+export interface SeccionCatalogo {
+  id: string;
+  titulo: string;
+  categorias: Categoria[];
 }
 
-export interface Selecciones {
-  cantidad: Opcion | null;
-  tipo: Opcion | null;
-  estilo: Opcion | null;
-  expresion: Opcion | null;
-  pose: Opcion | null;
-  lugar: Opcion | null;
-  ambiente: Opcion | null;
-  fondo: Opcion | null;
-}
+export type ListasData = Record<string, Opcion[]>;
+export type Selecciones = Record<string, Opcion | null>;

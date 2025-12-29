@@ -1,0 +1,8 @@
+[
+  { "id": "luz_natural", "nombre": "Luz natural", "descripcion": "natural daylight" },
+  { "id": "atardecer", "nombre": "Atardecer", "descripcion": "golden hour sunset lighting" },
+  { "id": "noche", "nombre": "Noche", "descripcion": "nighttime with artificial lights" },
+  { "id": "nublado", "nombre": "Nublado", "descripcion": "overcast soft lighting" },
+  { "id": "estudio", "nombre": "Estudio", "descripcion": "professional studio lighting" },
+  { "id": "dramatico", "nombre": "Dramatico", "descripcion": "dramatic lighting with shadows" }
+]

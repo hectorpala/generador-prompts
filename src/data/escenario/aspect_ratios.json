@@ -1,0 +1,10 @@
+[
+  { "id": "1:1", "nombre": "1:1 Cuadrado", "descripcion": "1:1" },
+  { "id": "16:9", "nombre": "16:9 Panoramico", "descripcion": "16:9" },
+  { "id": "9:16", "nombre": "9:16 Vertical", "descripcion": "9:16" },
+  { "id": "4:3", "nombre": "4:3 Clasico", "descripcion": "4:3" },
+  { "id": "3:4", "nombre": "3:4 Retrato", "descripcion": "3:4" },
+  { "id": "3:2", "nombre": "3:2 Foto estandar", "descripcion": "3:2" },
+  { "id": "2:3", "nombre": "2:3 Retrato foto", "descripcion": "2:3" },
+  { "id": "21:9", "nombre": "21:9 Ultrawide", "descripcion": "21:9" }
+]

@@ -1,0 +1,17 @@
+[
+  { "id": "blur", "nombre": "Blur / Desenfoque", "descripcion": "blurry, out of focus" },
+  { "id": "watermark", "nombre": "Marca de agua", "descripcion": "watermark, signature, logo" },
+  { "id": "texto", "nombre": "Texto", "descripcion": "text, words, letters" },
+  { "id": "baja_calidad", "nombre": "Baja calidad", "descripcion": "low quality, jpeg artifacts, pixelated" },
+  { "id": "anatomia", "nombre": "Anatomia incorrecta", "descripcion": "bad anatomy, deformed, extra limbs" },
+  { "id": "manos", "nombre": "Manos mal", "descripcion": "bad hands, extra fingers" },
+  { "id": "cara", "nombre": "Cara distorsionada", "descripcion": "distorted face, disfigured" },
+  { "id": "ojos", "nombre": "Ojos cruzados", "descripcion": "cross-eyed, asymmetric eyes" },
+  { "id": "luz", "nombre": "Iluminacion plana", "descripcion": "flat lighting, overexposed" },
+  { "id": "fondo", "nombre": "Fondo desordenado", "descripcion": "cluttered background" },
+  { "id": "cartoon", "nombre": "Estilo cartoon", "descripcion": "cartoon, anime, illustration" },
+  { "id": "cgi", "nombre": "CGI / 3D render", "descripcion": "cgi, 3d render, artificial" },
+  { "id": "recorte", "nombre": "Recorte malo", "descripcion": "cropped, cut off, out of frame" },
+  { "id": "duplicados", "nombre": "Duplicados", "descripcion": "duplicate, clone, copy" },
+  { "id": "colores", "nombre": "Colores sobresaturados", "descripcion": "oversaturated, unnatural colors" }
+]

@@ -1,0 +1,9 @@
+[
+  { "id": "corto", "nombre": "Corto", "descripcion": "short hair" },
+  { "id": "medio", "nombre": "Medio", "descripcion": "medium-length hair" },
+  { "id": "largo", "nombre": "Largo", "descripcion": "long hair" },
+  { "id": "lacio", "nombre": "Lacio", "descripcion": "straight hair" },
+  { "id": "ondulado", "nombre": "Ondulado", "descripcion": "wavy hair" },
+  { "id": "rizado", "nombre": "Rizado", "descripcion": "curly hair" },
+  { "id": "afro", "nombre": "Afro", "descripcion": "afro hair" }
+]

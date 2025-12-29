@@ -1,0 +1,7 @@
+[
+  { "id": "clara", "nombre": "Clara", "descripcion": "light skin tone" },
+  { "id": "media", "nombre": "Media", "descripcion": "medium skin tone" },
+  { "id": "morena", "nombre": "Morena", "descripcion": "tan skin tone" },
+  { "id": "oscura", "nombre": "Oscura", "descripcion": "dark skin tone" },
+  { "id": "pecas", "nombre": "Con pecas", "descripcion": "freckles" }
+]

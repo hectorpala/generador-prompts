@@ -29,6 +29,14 @@
     { "id": "7", "nombre": "Vintage", "descripcion": "vintage retro style" },
     { "id": "8", "nombre": "Moderno", "descripcion": "modern contemporary style" }
   ],
+  "cuerpos": [
+    { "id": "1", "nombre": "Delgado/a", "descripcion": "slim build" },
+    { "id": "2", "nombre": "Atletico/a", "descripcion": "athletic build" },
+    { "id": "3", "nombre": "Curvilineo/a", "descripcion": "curvy body type" },
+    { "id": "4", "nombre": "Plus size", "descripcion": "plus-size body type" },
+    { "id": "5", "nombre": "Petite", "descripcion": "petite build" },
+    { "id": "6", "nombre": "Alto/a", "descripcion": "tall and lean build" }
+  ],
   "expresiones": [
     { "id": "1", "nombre": "Sonriente", "descripcion": "smiling" },
     { "id": "2", "nombre": "Serio/a", "descripcion": "serious expression" },
@@ -44,5 +52,18 @@
     { "id": "4", "nombre": "Retrato cercano", "descripcion": "close-up portrait" },
     { "id": "5", "nombre": "Cuerpo completo", "descripcion": "full body shot" },
     { "id": "6", "nombre": "Perfil", "descripcion": "profile view" }
+  ],
+  "acciones": [
+    { "id": "1", "nombre": "Corriendo", "descripcion": "running" },
+    { "id": "2", "nombre": "Avanzando", "descripcion": "moving forward" },
+    { "id": "3", "nombre": "Llorando", "descripcion": "crying" },
+    { "id": "4", "nombre": "Gritando", "descripcion": "shouting" },
+    { "id": "5", "nombre": "Platicando con la otra persona", "descripcion": "talking with {{other}}" },
+    { "id": "6", "nombre": "Bailando con la otra persona", "descripcion": "dancing with {{other}}" },
+    { "id": "7", "nombre": "Peleando (no violento) con la otra persona", "descripcion": "arguing with {{other}}, non-violent" },
+    { "id": "8", "nombre": "Riendo", "descripcion": "laughing" },
+    { "id": "9", "nombre": "Trabajando", "descripcion": "working" },
+    { "id": "10", "nombre": "Escribiendo", "descripcion": "writing" },
+    { "id": "11", "nombre": "Observando", "descripcion": "observing" }
   ]
 }

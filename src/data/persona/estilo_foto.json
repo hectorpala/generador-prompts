@@ -1,0 +1,8 @@
+[
+  { "id": "editorial", "nombre": "Editorial", "descripcion": "editorial portrait" },
+  { "id": "documental", "nombre": "Documental", "descripcion": "documentary style" },
+  { "id": "corporativo", "nombre": "Corporativo", "descripcion": "corporate portrait" },
+  { "id": "lifestyle", "nombre": "Lifestyle", "descripcion": "lifestyle portrait" },
+  { "id": "fitness", "nombre": "Fitness", "descripcion": "fitness photography" },
+  { "id": "fashion", "nombre": "Fashion", "descripcion": "fashion portrait" }
+]
