@@ -6,6 +6,52 @@ import './App.css'
 
 const STORAGE_KEY_LISTAS = 'generador-prompts-listas'
 const MAX_PERSONAS = 3
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY as string
+
+async function mejorarPromptConIA(promptActual: string, instrucciones: string): Promise<string> {
+  if (!OPENAI_API_KEY) {
+    throw new Error('API Key de OpenAI no configurada. Crea un archivo .env con VITE_OPENAI_API_KEY')
+  }
+
+  const systemPrompt = `Eres un experto en crear prompts para generación de imágenes con IA (Midjourney, DALL-E, Stable Diffusion).
+Tu tarea es mejorar y expandir el prompt dado, haciéndolo más detallado y efectivo para generar imágenes de alta calidad.
+Mantén el idioma en inglés. Agrega detalles sobre iluminación, composición, estilo artístico, y calidad cuando sea apropiado.
+Responde SOLO con el prompt mejorado, sin explicaciones adicionales.`
+
+  const userMessage = instrucciones
+    ? `Mejora este prompt siguiendo estas instrucciones: "${instrucciones}"
+
+Prompt original:
+${promptActual}`
+    : `Mejora y expande este prompt para generar una imagen más detallada y profesional:
+
+${promptActual}`
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage }
+      ],
+      temperature: 0.7,
+      max_tokens: 500
+    })
+  })
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.error?.message || 'Error al conectar con OpenAI')
+  }
+
+  const data = await response.json()
+  return data.choices[0]?.message?.content?.trim() || promptActual
+}
 
 const personaSeccion = catalogo.find((seccion) => seccion.id === 'persona')
 const escenarioSeccion = catalogo.find((seccion) => seccion.id === 'escenario')
@@ -84,6 +130,10 @@ function App() {
   const [busquedas, setBusquedas] = useState<Record<string, string>>({})
   const [nuevoItem, setNuevoItem] = useState<Record<string, { nombre: string; descripcion: string }>>({})
   const [mostrarPlantillas, setMostrarPlantillas] = useState(false)
+  const [instruccionesIA, setInstruccionesIA] = useState('')
+  const [promptMejorado, setPromptMejorado] = useState('')
+  const [cargandoIA, setCargandoIA] = useState(false)
+  const [errorIA, setErrorIA] = useState('')
   const [categoriaPlantillaActiva, setCategoriaPlantillaActiva] = useState<string | null>(null)
 
   useEffect(() => {
@@ -243,6 +293,29 @@ function App() {
     })
     setSeleccionesEscenario(nuevasSeleccionesEscenario)
     setMostrarPlantillas(false)
+  }
+
+  const handleMejorarConIA = async () => {
+    if (!prompt) return
+    setCargandoIA(true)
+    setErrorIA('')
+    setPromptMejorado('')
+    try {
+      const resultado = await mejorarPromptConIA(prompt, instruccionesIA)
+      setPromptMejorado(resultado)
+    } catch (error) {
+      setErrorIA(error instanceof Error ? error.message : 'Error desconocido')
+    } finally {
+      setCargandoIA(false)
+    }
+  }
+
+  const copiarPromptMejorado = async () => {
+    if (promptMejorado) {
+      await navigator.clipboard.writeText(promptMejorado)
+      setCopiado(true)
+      setTimeout(() => setCopiado(false), 2000)
+    }
   }
 
   const plantillasFiltradas = categoriaPlantillaActiva
@@ -570,6 +643,41 @@ function App() {
             >
               {copiado ? 'Copiado!' : 'Copiar Prompt'}
             </button>
+
+            <div className="ia-section">
+              <h3>Mejorar con IA</h3>
+              <textarea
+                className="instrucciones-ia"
+                placeholder="Instrucciones adicionales (opcional): ej. 'hazlo más cinematográfico', 'agrega más detalles de iluminación'..."
+                value={instruccionesIA}
+                onChange={(e) => setInstruccionesIA(e.target.value)}
+                rows={3}
+              />
+              <button
+                className={'btn-ia ' + (cargandoIA ? 'cargando' : '')}
+                onClick={handleMejorarConIA}
+                disabled={!prompt || cargandoIA}
+              >
+                {cargandoIA ? 'Mejorando...' : 'Mejorar con ChatGPT'}
+              </button>
+
+              {errorIA && <div className="error-ia">{errorIA}</div>}
+
+              {promptMejorado && (
+                <div className="prompt-mejorado">
+                  <div className="prompt-mejorado-header">
+                    <h4>Prompt Mejorado</h4>
+                  </div>
+                  <div className="prompt-box mejorado">{promptMejorado}</div>
+                  <button
+                    className={'btn-copiar ' + (copiado ? 'copiado' : '')}
+                    onClick={copiarPromptMejorado}
+                  >
+                    {copiado ? 'Copiado!' : 'Copiar Prompt Mejorado'}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ) : (
